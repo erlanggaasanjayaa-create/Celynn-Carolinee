@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Form - Portal Webtoon</title>
+
+<style>
+:root {
+    --bg-primary: linear-gradient(135deg,#5865F2,#4752C4);
+    --text-primary: #333;
+    --text-secondary: #666;
+    --text-muted: #999;
+    --card-bg: white;
+    --shadow: rgba(0,0,0,.2);
+    --accent-color: #5865F2;
+    --accent-hover: #4752C4;
+    --clock-bg: #fff;
+    --clock-text: #5865F2;
+    --nav-bg: white;
+    --nav-hover-bg: #5865F2;
+    --nav-hover-text: white;
+    --footer-bg: #4149a8;
+    --footer-text: white;
+    --input-bg: white;
+    --input-border: #ddd;
+    --input-text: #333;
+    --logo-gradient-1: #FFD700;
+    --logo-gradient-2: #FFA500;
+}
+
+[data-theme="dark"] {
+    --bg-primary: linear-gradient(135deg,#2d2d50,#1a1a3e);
+    --text-primary: #e0e0e0;
+    --text-secondary: #b0b0b0;
+    --text-muted: #888;
+    --card-bg: #2d2d2d;
+    --shadow: rgba(0,0,0,.5);
+    --accent-color: #7B68EE;
+    --accent-hover: #6A5ACD;
+    --clock-bg: #2d2d2d;
+    --clock-text: #7B68EE;
+    --nav-bg: #2d2d2d;
+    --nav-hover-bg: #7B68EE;
+    --nav-hover-text: white;
+    --footer-bg: #1a1a1a;
+    --footer-text: #e0e0e0;
+    --input-bg: #1a1a1a;
+    --input-border: #444;
+    --input-text: #e0e0e0;
+    --logo-gradient-1: #4B0082;
+    --logo-gradient-2: #8B00FF;
+}
+
+*{margin:0;padding:0;box-sizing:border-box;transition:background-color 0.3s ease, color 0.3s ease, border-color 0.3s ease}
+body{
+font-family:'Segoe UI',Tahoma,Geneva,Verdana,sans-serif;
+background:var(--bg-primary)
+}
+table{width:100%;border-collapse:collapse}
+
+/* Dark Mode Toggle */
+.theme-toggle {
+    position: fixed;
+    top: 20px;
+    left: 20px;
+    width: 60px;
+    height: 60px;
+    background: var(--accent-color);
+    border-radius: 50%;
+    border: none;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    box-shadow: 0 4px 15px var(--shadow);
+    transition: all 0.3s ease;
+    z-index: 1000;
+}
+
+.theme-toggle:hover {
+    transform: scale(1.1) rotate(20deg);
+}
+
+.theme-toggle svg {
+    width: 30px;
+    height: 30px;
+    fill: white;
+}
+
+/* CLOCK */
+.clock-widget{
+position:fixed;top:20px;right:20px;
+background:var(--clock-bg);padding:15px 20px;
+border-radius:10px;box-shadow:0 4px 15px var(--shadow);
+z-index:1000;text-align:center;min-width:180px
+}
+
+.clock-logo {
+    width: 40px;
+    height: 40px;
+    margin: 0 auto 10px;
+    background: linear-gradient(135deg, var(--logo-gradient-1), var(--logo-gradient-2));
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    position: relative;
+}
+
+.clock-logo::before {
+    content: '';
+    position: absolute;
+    width: 50px;
+    height: 50px;
+    border-radius: 50%;
+    background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+    opacity: 1;
+    transition: opacity 0.3s ease;
+}
+
+[data-theme="dark"] .clock-logo::before {
+    opacity: 0;
+}
+
+.clock-logo svg {
+    width: 24px;
+    height: 24px;
+    fill: white;
+}
+
+#sunClockIcon {
+    display: block;
+}
+
+[data-theme="dark"] #sunClockIcon {
+    display: none;
+}
+
+#moonClockIcon {
+    display: none;
+}
+
+[data-theme="dark"] #moonClockIcon {
+    display: block;
+}
+
+.clock-time{font-size:1.5em;font-weight:bold;color:var(--clock-text)}
+.clock-date{font-size:.85em;color:var(--text-secondary)}
+.clock-greeting{font-size:.75em;color:var(--text-muted);font-style:italic}
+
+/* BANNER */
+.banner{
+background:var(--bg-primary);
+color:white;text-align:center;padding:40px 20px
+}
+.banner h1{font-size:2.5em}
+
+/* NAV */
+.navigation{background:var(--nav-bg);box-shadow:0 2px 10px var(--shadow)}
+.navigation ul{list-style:none;display:flex;justify-content:center;flex-wrap:wrap}
+.navigation a{
+padding:20px 30px;display:block;
+text-decoration:none;color:var(--text-primary);font-weight:600
+}
+.navigation a:hover,.navigation a.active{
+background:var(--nav-hover-bg);color:var(--nav-hover-text)
+}
+
+/* CONTENT */
+.content{padding:40px 20px}
+.form-container{
+max-width:1200px;margin:auto;
+display:grid;grid-template-columns:1fr 1fr;gap:30px
+}
+.form-section,.submissions-section{
+background:var(--card-bg);padding:30px;border-radius:20px;
+box-shadow:0 10px 40px var(--shadow)
+}
+.section-header{
+color:var(--accent-color);font-size:1.8em;
+text-align:center;border-bottom:3px solid var(--accent-color);
+padding-bottom:10px;margin-bottom:20px
+}
+.form-group{margin-bottom:20px}
+.form-group label{font-weight:600;color:var(--text-primary)}
+.form-group input,
+.form-group textarea,
+.form-group select{
+width:100%;padding:12px;
+border:2px solid var(--input-border);border-radius:10px;
+background:var(--input-bg);color:var(--input-text)
+}
+.form-group textarea{min-height:80px}
+.submit-btn{
+width:100%;padding:15px;
+background:var(--accent-color);color:white;
+border:none;border-radius:10px;
+font-size:1.1em;font-weight:bold;
+cursor:pointer
+}
+.submit-btn:hover{background:var(--accent-hover)}
+.success-message{
+display:none;background:#4CAF50;
+color:white;padding:10px;
+border-radius:10px;text-align:center;
+margin-bottom:15px
+}
+.submission-card{
+background:var(--input-bg);padding:20px;
+border-left:4px solid var(--accent-color);
+border-radius:10px;margin-bottom:15px;
+color:var(--text-primary)
+}
+.genre-badge{
+background:var(--accent-color);color:white;
+padding:4px 10px;border-radius:15px;
+font-size:.8em;margin-right:5px
+}
+.gender-badge{
+background:#FF69B4;color:white;
+padding:4px 10px;border-radius:15px;
+font-size:.8em
+}
+.delete-btn{
+background:#ff4444;color:white;
+border:none;padding:5px 10px;
+border-radius:5px;margin-top:10px;
+cursor:pointer
+}
+.delete-btn:hover{background:#cc0000}
+.clear-all-btn{
+width:100%;background:#ff4444;color:white;
+border:none;padding:10px;border-radius:8px;margin-bottom:15px;
+cursor:pointer
+}
+.clear-all-btn:hover{background:#cc0000}
+.empty-state{text-align:center;color:var(--text-muted)}
+
+/* FOOTER */
+.footer{
+background:var(--footer-bg);color:var(--footer-text);
+text-align:center;padding:20px
+}
+
+@media(max-width:900px){
+.form-container{grid-template-columns:1fr}
+.theme-toggle{width:50px;height:50px;top:15px;left:15px}
+.theme-toggle svg{width:25px;height:25px}
+}
+</style>
+</head>
+
+<body>
+
+<!-- Dark Mode Toggle Button -->
+<button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+    <svg id="sunIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="12" y1="21" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="1" y1="12" x2="3" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="21" y1="12" x2="23" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <svg id="moonIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    </svg>
+</button>
+
+<!-- CLOCK -->
+<div class="clock-widget">
+<div class="clock-logo">
+    <svg id="sunClockIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <circle cx="12" cy="12" r="5"/>
+        <line x1="12" y1="1" x2="12" y2="3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="12" y1="21" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="1" y1="12" x2="3" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="21" y1="12" x2="23" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+    </svg>
+    <svg id="moonClockIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+        <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+    </svg>
+</div>
+<div class="clock-time" id="clockTime"></div>
+<div class="clock-date" id="clockDate"></div>
+<div class="clock-greeting" id="clockGreeting"></div>
+</div>
+
+<table>
+
+<tr>
+<td class="banner">
+<h1>Formulir Portal Webtoon</h1>
+<p>Daftarkan Diri Anda Sekarang!</p>
+</td>
+</tr>
+
+<tr>
+<td class="navigation">
+<ul>
+<li><a href="Home.html">Home</a></li>
+<li><a href="Galeri V2.html">Gallery</a></li>
+<li><a href="Formulir V2.html" class="active">Form</a></li>
+<li><a href="Tentang Kami.html">About Us</a></li>
+<li><a href="Bagian Depan.html">Portal Webtoon</a></li>
+</ul>
+</td>
+</tr>
+
+<tr>
+<td class="content">
+
+<div class="form-container">
+
+<!-- FORM -->
+<div class="form-section">
+<h3 class="section-header">📋 Formulir Pendaftaran</h3>
+
+<div class="success-message" id="successMessage">✓ Formulir berhasil dikirim</div>
+
+<form id="webtoonForm">
+
+<div class="form-group">
+<label>Nama Lengkap *</label>
+<input type="text" id="name" required>
+</div>
+
+<div class="form-group">
+<label>Username *</label>
+<input type="text" id="username" required>
+</div>
+
+<div class="form-group">
+<label>NIM *</label>
+<input type="text" id="nim" required>
+</div>
+
+<div class="form-group">
+<label>Jenis Kelamin *</label>
+<select id="gender" required>
+<option value="">Pilih Jenis Kelamin</option>
+<option>Laki-laki</option>
+<option>Perempuan</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Kelas *</label>
+<input type="text" id="kelas" required>
+</div>
+
+<div class="form-group">
+<label>Jurusan *</label>
+<input type="text" id="jurusan" required>
+</div>
+
+<div class="form-group">
+<label>Alamat *</label>
+<textarea id="alamat" required></textarea>
+</div>
+
+<div class="form-group">
+<label>Kota *</label>
+<input type="text" id="kota" required>
+</div>
+
+<div class="form-group">
+<label>Email *</label>
+<input type="email" id="email" required>
+</div>
+
+<div class="form-group">
+<label>Genre Favorit *</label>
+<select id="genre" required>
+<option value="">Pilih Genre</option>
+<option>Romance</option>
+<option>Action</option>
+<option>Comedy</option>
+<option>Drama</option>
+<option>Fantasy</option>
+<option>Superhero</option>
+<option>Superhuman</option>
+<option>Slice of Life</option>
+<option>Kingdom</option>
+</select>
+</div>
+
+<div class="form-group">
+<label>Pesan / Saran</label>
+<textarea id="message"></textarea>
+</div>
+
+<button class="submit-btn">📤 Kirim Formulir</button>
+
+</form>
+</div>
+
+<!-- DATA -->
+<div class="submissions-section">
+<h3 class="section-header">📊 Data Pendaftaran (<span id="submissionCount">0</span>)</h3>
+<button class="clear-all-btn" id="clearAllBtn" style="display:none">🗑️ Hapus Semua</button>
+<div id="submissionsList" class="empty-state">
+Belum ada data pendaftaran
+</div>
+</div>
+
+</div>
+</td>
+</tr>
+
+<tr>
+<td class="footer">
+      <!-- Footer -->
+        <footer>
+ &copy; CopyRight [Erlangga Sanjaya | 251011701265 | 01SIFP014] 
+            ATP / ATM HARINYA SENIN TERUS! - 2026</td>
+</tr>
+
+</table>
+
+<script>
+// Dark Mode
+const themeToggle = document.getElementById('themeToggle');
+const sunIcon = document.getElementById('sunIcon');
+const moonIcon = document.getElementById('moonIcon');
+const html = document.documentElement;
+
+const currentTheme = localStorage.getItem('theme') || 'light';
+html.setAttribute('data-theme', currentTheme);
+updateIcons(currentTheme);
+
+themeToggle.addEventListener('click', () => {
+    const currentTheme = html.getAttribute('data-theme');
+    const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+    
+    html.setAttribute('data-theme', newTheme);
+    localStorage.setItem('theme', newTheme);
+    updateIcons(newTheme);
+    
+    themeToggle.style.transform = 'rotate(360deg)';
+    setTimeout(() => {
+        themeToggle.style.transform = 'rotate(0deg)';
+    }, 300);
+});
+
+function updateIcons(theme) {
+    if (theme === 'dark') {
+        sunIcon.style.display = 'none';
+        moonIcon.style.display = 'block';
+    } else {
+        sunIcon.style.display = 'block';
+        moonIcon.style.display = 'none';
+    }
+}
+
+// CLOCK
+function updateClock(){
+const n=new Date();
+const h=n.getHours().toString().padStart(2,'0');
+const m=n.getMinutes().toString().padStart(2,'0');
+const s=n.getSeconds().toString().padStart(2,'0');
+document.getElementById('clockTime').textContent=`${h}:${m}:${s}`;
+document.getElementById('clockDate').textContent=n.toLocaleDateString('id-ID',{weekday:'long',day:'numeric',month:'long',year:'numeric'});
+document.getElementById('clockGreeting').textContent='Selamat '+(h<10?'Pagi':h<15?'Siang':h<18?'Sore':'Malam');
+}
+setInterval(updateClock,1000);updateClock();
+
+// FORM
+let submissions=[];
+const form=document.getElementById('webtoonForm');
+const list=document.getElementById('submissionsList');
+const count=document.getElementById('submissionCount');
+const clearBtn=document.getElementById('clearAllBtn');
+const success=document.getElementById('successMessage');
+
+form.addEventListener('submit',e=>{
+e.preventDefault();
+const data={
+id:Date.now(),
+name:name.value,
+username:username.value,
+nim:nim.value,
+gender:gender.value,
+kelas:kelas.value,
+jurusan:jurusan.value,
+alamat:alamat.value,
+kota:kota.value,
+email:email.value,
+genre:genre.value,
+message:message.value||'-',
+time:new Date().toLocaleString('id-ID')
+};
+submissions.unshift(data);
+success.style.display='block';
+setTimeout(()=>success.style.display='none',3000);
+form.reset();render();
+});
+
+function render(){
+count.textContent=submissions.length;
+if(!submissions.length){
+list.innerHTML='<div class="empty-state">Belum ada data pendaftaran</div>';
+clearBtn.style.display='none';return;
+}
+clearBtn.style.display='block';
+list.innerHTML=submissions.map(d=>`
+<div class="submission-card">
+<b>${d.name}</b> (${d.time})
+<p>Username: @${d.username}</p>
+<p>NIM: ${d.nim}</p>
+<p>Jenis Kelamin: ${d.gender}</p>
+<p>Kelas: ${d.kelas}</p>
+<p>Jurusan: ${d.jurusan}</p>
+<p>Alamat: ${d.alamat}</p>
+<p>Kota: ${d.kota}</p>
+<p>Email: ${d.email}</p>
+<span class="genre-badge">${d.genre}</span>
+<span class="gender-badge">${d.gender}</span>
+<p style="margin-top:10px">${d.message}</p>
+<button class="delete-btn" onclick="hapus(${d.id})">Hapus</button>
+</div>`).join('');
+}
+
+function hapus(id){
+submissions=submissions.filter(d=>d.id!==id);render();
+}
+clearBtn.onclick=()=>{
+if(confirm('Yakin ingin menghapus semua data?')){
+submissions=[];render();
+}
+}
+
+// USERNAME VALIDATION
+username.addEventListener('input',()=>{
+username.value=username.value.toLowerCase().replace(/[^a-z0-9_]/g,'');
+});
+</script>
+
+</body>
+</html>

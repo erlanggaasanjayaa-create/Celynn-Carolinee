@@ -1,0 +1,570 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Home - Portal Webtoon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-gradient-1: #f5f7fa;
+            --bg-gradient-2: #c3cfe2;
+            --text-primary: #333;
+            --text-secondary: #555;
+            --text-muted: #666;
+            --accent-color: #007BFF;
+            --accent-hover: #0056b3;
+            --card-bg: white;
+            --shadow: rgba(0,0,0,0.1);
+            --shadow-hover: rgba(0,123,255,0.3);
+            --clock-bg: white;
+            --clock-text: #007BFF;
+            --nav-bg: #ffffff;
+            --nav-hover-bg: #007BFF;
+            --nav-hover-text: white;
+            --footer-bg: #E5E4E4;
+            --footer-text: #333;
+            --logo-gradient-1: #FFD700;
+            --logo-gradient-2: #FFA500;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-gradient-1: #1a1a1a;
+            --bg-gradient-2: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --text-muted: #888;
+            --accent-color: #7B68EE;
+            --accent-hover: #6A5ACD;
+            --card-bg: #2d2d2d;
+            --shadow: rgba(0,0,0,0.5);
+            --shadow-hover: rgba(123,104,238,0.3);
+            --clock-bg: #2d2d2d;
+            --clock-text: #7B68EE;
+            --nav-bg: #2d2d2d;
+            --nav-hover-bg: #7B68EE;
+            --nav-hover-text: white;
+            --footer-bg: #1a1a1a;
+            --footer-text: #e0e0e0;
+            --logo-gradient-1: #4B0082;
+            --logo-gradient-2: #8B00FF;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            position: relative;
+            transition: background 0.3s ease;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(20deg);
+        }
+
+        .theme-toggle svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        /* Clock Widget */
+        .clock-widget {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--clock-bg);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 1000;
+            min-width: 180px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .clock-time {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--clock-text);
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .clock-date {
+            font-size: 0.85em;
+            color: var(--text-muted);
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .clock-greeting {
+            font-size: 0.75em;
+            color: var(--text-muted);
+            margin-top: 5px;
+            font-style: italic;
+            transition: color 0.3s ease;
+        }
+
+        /* Logo Matahari/Bulan di Clock */
+        .clock-logo {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 10px;
+            background: linear-gradient(135deg, var(--logo-gradient-1), var(--logo-gradient-2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .clock-logo::before {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .clock-logo::before {
+            opacity: 0;
+        }
+
+        .clock-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        #sunClockIcon {
+            display: block;
+        }
+
+        [data-theme="dark"] #sunClockIcon {
+            display: none;
+        }
+
+        #moonClockIcon {
+            display: none;
+        }
+
+        [data-theme="dark"] #moonClockIcon {
+            display: block;
+        }
+
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, var(--accent-color) 0%, var(--accent-hover) 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            transition: background 0.3s ease;
+        }
+
+        .banner h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .banner p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .navigation {
+            background: var(--nav-bg);
+            padding: 0;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .navigation ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navigation li {
+            margin: 0;
+        }
+
+        .navigation a {
+            display: block;
+            padding: 20px 30px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .navigation a:hover, .navigation a.active {
+            background: var(--nav-hover-bg);
+            color: var(--nav-hover-text);
+            border-bottom-color: var(--accent-hover);
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 20px;
+            min-height: 500px;
+        }
+
+        .welcome-section {
+            background: var(--card-bg);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 40px var(--shadow);
+            max-width: 1000px;
+            margin: 0 auto 30px;
+            transition: all 0.3s ease;
+        }
+
+        .welcome-section h2 {
+            color: var(--accent-color);
+            font-size: 2em;
+            margin-bottom: 20px;
+            text-align: center;
+            transition: color 0.3s ease;
+        }
+
+        .welcome-section p {
+            color: var(--text-secondary);
+            line-height: 1.8;
+            text-align: justify;
+            margin-bottom: 15px;
+            transition: color 0.3s ease;
+        }
+
+        .features {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .feature-card {
+            background: var(--card-bg);
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px var(--shadow);
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 8px 25px var(--shadow-hover);
+        }
+
+        .feature-icon {
+            font-size: 3em;
+            margin-bottom: 15px;
+        }
+
+        .feature-card h3 {
+            color: var(--accent-color);
+            margin-bottom: 10px;
+            font-size: 1.3em;
+            transition: color 0.3s ease;
+        }
+
+        .feature-card p {
+            color: var(--text-muted);
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                width: 50px;
+                height: 50px;
+                top: 15px;
+                left: 15px;
+            }
+
+            .theme-toggle svg {
+                width: 25px;
+                height: 25px;
+            }
+
+            .clock-widget {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                min-width: 150px;
+            }
+
+            .clock-time {
+                font-size: 1.2em;
+            }
+
+            .clock-date {
+                font-size: 0.75em;
+            }
+
+            .banner h1 {
+                font-size: 1.8em;
+            }
+
+            .navigation a {
+                padding: 15px 20px;
+                font-size: 0.9em;
+            }
+
+            .welcome-section {
+                padding: 25px;
+            }
+
+            .features {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dark Mode Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg id="sunIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg id="moonIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+    </button>
+
+    <!-- Clock Widget -->
+    <div class="clock-widget">
+        <div class="clock-logo">
+            <svg id="sunClockIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="12" y1="21" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="1" y1="12" x2="3" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="21" y1="12" x2="23" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg id="moonClockIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+        </div>
+        <div class="clock-time" id="clockTime">00:00:00</div>
+        <div class="clock-date" id="clockDate">Loading...</div>
+        <div class="clock-greeting" id="clockGreeting"></div>
+    </div>
+
+    <table>
+        <!-- Banner -->
+        <tr>
+            <td class="banner">
+                <h1>Portal Webtoon Indonesia</h1>
+                <p>Platform Terbaik untuk Pecinta Komik Digital</p>
+            </td>
+        </tr>
+
+        <!-- Navigation -->
+        <tr>
+            <td class="navigation">
+                <ul>
+                    <li><a href="Home.html" class="active">Home</a></li>
+                    <li><a href="Galeri V2.html">Gallery</a></li>
+                    <li><a href="Formulir V2.html">Form</a></li>
+                    <li><a href="Tentang Kami.html">About Us</a></li>
+                    <li><a href="Bagian Depan.html">Portal Webtoon</a></li>
+                </ul>
+            </td>
+        </tr>
+
+        <!-- Content -->
+        <tr>
+            <td class="content">
+                <!-- Welcome Section -->
+                <div class="welcome-section">
+                    <h2>Selamat Datang di Portal Webtoon!</h2>
+                    <p>
+                        Portal Webtoon adalah platform komunitas terbesar di Indonesia yang didedikasikan untuk para pecinta komik digital. 
+                        Di sini, Anda dapat menemukan ribuan judul webtoon dari berbagai genre, mulai dari romance, action, comedy, hingga drama.
+                    </p>
+                    <p>
+                        Kami berkomitmen untuk memberikan pengalaman membaca yang terbaik dengan update rutin setiap hari, 
+                        fitur komentar interaktif, dan sistem rating yang membantu Anda menemukan webtoon favorit baru.
+                    </p>
+                    <p>
+                        Bergabunglah dengan komunitas kami dan nikmati ribuan episode dari kreator-kreator berbakat Indonesia!
+                    </p>
+                </div>
+
+                <!-- Features -->
+                <div class="features">
+                    <div class="feature-card">
+                        <div class="feature-icon">📚</div>
+                        <h3>Koleksi Lengkap</h3>
+                        <p>Ribuan judul webtoon dari berbagai genre untuk dinikmati setiap hari</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🎨</div>
+                        <h3>Galeri Visual</h3>
+                        <p>Tampilan visual menarik dengan sistem filter berdasarkan kategori</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">📝</div>
+                        <h3>Pendaftaran Mudah</h3>
+                        <p>Formulir pendaftaran yang simple dan user-friendly</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">👥</div>
+                        <h3>Komunitas Aktif</h3>
+                        <p>Bergabung dengan ribuan pecinta webtoon di seluruh Indonesia</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">🙎🏻</div>
+                        <h3>Tentang Kami</h3>
+                        <p>Para pembuat Portal Webtoon ada di sini!</p>
+                    </div>
+                    <div class="feature-card">
+                        <div class="feature-icon">✅</div>
+                        <h3>Webtoon Original</h3>
+                        <p>Link webtoonnya ada di sini juga loh!</p>
+                    </div>
+                </div>
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td class="footer">
+                &copy; CopyRight [Erlangga Sanjaya | 251011701265 | 01SIFP014] ATP / ATM HARINYA SENIN TERUS! - 2026
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        // Dark Mode Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const html = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateIcons(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcons(newTheme);
+            
+            themeToggle.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                themeToggle.style.transform = 'rotate(0deg)';
+            }, 300);
+        });
+
+        function updateIcons(theme) {
+            if (theme === 'dark') {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        }
+
+        // Clock Update
+        function updateClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const dayName = days[now.getDay()];
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            
+            let greeting = '';
+            const hour = now.getHours();
+            if (hour < 10) greeting = 'Pagi';
+            else if (hour < 15) greeting = 'Siang';
+            else if (hour < 18) greeting = 'Sore';
+            else greeting = 'Malam';
+            
+            document.getElementById('clockTime').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('clockDate').innerHTML = `${dayName}, ${date} ${month} ${year}`;
+            document.getElementById('clockGreeting').textContent = `Selamat ${greeting}`;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+    </script>
+</body>
+</html>

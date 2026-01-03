@@ -1,0 +1,391 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Portal Webtoon Indonesia</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-primary: #ffffff;
+            --bg-secondary: #f5f7fa;
+            --text-primary: #333333;
+            --text-secondary: #666666;
+            --accent-color: #00DC64;
+            --accent-hover: #00AB4E;
+            --shadow: rgba(0, 0, 0, 0.1);
+            --card-bg: #ffffff;
+        }
+
+        [data-theme="dark"] {
+            --bg-primary: #1a1a1a;
+            --bg-secondary: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-color: #00DC64;
+            --accent-hover: #00AB4E;
+            --shadow: rgba(0, 0, 0, 0.5);
+            --card-bg: #2d2d2d;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+
+        .container {
+            text-align: center;
+            max-width: 500px;
+            width: 100%;
+            position: relative;
+        }
+
+        /* Dark Mode Toggle - Pojok Kiri Atas */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(20deg);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .theme-toggle svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+            transition: transform 0.3s ease;
+        }
+
+        /* Banner Logo - Logo Webtoon Asli */
+        .logo {
+            width: 120px;
+            height: 120px;
+            margin: 0 auto 30px;
+            background: linear-gradient(135deg, #00DC64, #00AB4E);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 10px 30px rgba(0, 220, 100, 0.3);
+            animation: float 3s ease-in-out infinite;
+            transition: all 0.3s ease;
+        }
+
+        [data-theme="dark"] .logo {
+            background: linear-gradient(135deg, #00AB4E, #008C3E);
+            box-shadow: 0 10px 30px rgba(0, 171, 78, 0.4);
+        }
+
+        .logo svg {
+            width: 70px;
+            height: 70px;
+            fill: white;
+        }
+
+        @keyframes float {
+            0%, 100% { transform: translateY(0px); }
+            50% { transform: translateY(-10px); }
+        }
+
+        h1 {
+            color: var(--accent-color);
+            font-size: 3em;
+            margin-bottom: 15px;
+            font-weight: bold;
+            text-shadow: 2px 2px 4px var(--shadow);
+            transition: color 0.3s ease;
+        }
+
+        .subtitle {
+            color: var(--text-secondary);
+            font-size: 1.1em;
+            margin-bottom: 40px;
+            transition: color 0.3s ease;
+        }
+
+        /* Navigasi/Menu */
+        .button-container {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+            margin-bottom: 30px;
+        }
+
+        .btn {
+            padding: 18px 30px;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1em;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 12px;
+            text-decoration: none;
+            color: white;
+            box-shadow: 0 4px 15px var(--shadow);
+        }
+
+        .btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 6px 20px var(--shadow);
+        }
+
+        .btn:active {
+            transform: translateY(-1px);
+        }
+
+        .btn-home {
+            background: linear-gradient(135deg, #00BFFF, #007ACC);
+        }
+
+        .btn-gallery {
+            background: linear-gradient(135deg, #00DC64, #00AB4E);
+        }
+
+        .btn-link {
+            background: linear-gradient(135deg, #4a4a4a, #2d2d2d);
+        }
+
+        .btn-form {
+            background: linear-gradient(135deg, #5865F2, #4752C4);
+        }
+
+        .btn-about {
+            background: linear-gradient(135deg, #FF6B6B, #EE5A52);
+        }
+
+        .btn svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        /* Content */
+        .content {
+            background: var(--card-bg);
+            padding: 20px;
+            border-radius: 15px;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: background-color 0.3s ease;
+        }
+
+        .content p {
+            color: var(--text-primary);
+            line-height: 1.6;
+            transition: color 0.3s ease;
+        }
+
+        /* Footer */
+        footer {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            margin-top: 20px;
+            transition: color 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                width: 50px;
+                height: 50px;
+                top: 15px;
+                left: 15px;
+            }
+
+            .theme-toggle svg {
+                width: 25px;
+                height: 25px;
+            }
+
+            h1 {
+                font-size: 2em;
+            }
+
+            .logo {
+                width: 100px;
+                height: 100px;
+            }
+
+            .logo::before {
+                width: 120px;
+                height: 120px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dark Mode Toggle Button - Pojok Kiri Atas -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg id="sunIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg id="moonIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+    </button>
+
+    <div class="container">
+        <!-- Banner dengan Logo Webtoon Asli -->
+        <div class="logo">
+            <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M19 2H5c-1.1 0-2 .9-2 2v16c0 
+                1.1.9 2 2 2h14c1.1 0 2-.9 2-2V4c0-1.1-.9-2-2-2zM9 
+                18H7V6h2v12zm4 0h-2V6h2v12zm4 0h-2V6h2v12z"/>
+            </svg>
+        </div>
+
+        <!-- Judul -->
+        <h1>Portal Webtoon</h1>
+        <p class="subtitle">Indonesia's Largest Comic Community</p>
+
+        <!-- Navigasi/Menu -->
+        <div class="button-container">
+            <a href="home.html" class="btn btn-home">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M10 20v-6h4v6h5v-8h3L12 3 
+                    2 12h3v8z"/>
+                </svg>
+                Home
+            </a>
+
+            <a href="Galeri V2.html" class="btn btn-gallery">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M22 16V4c0-1.1-.9-2-2-2H8c-1.1 0-2 .9-2 
+                    2v12c0 1.1.9 2 2 2h12c1.1 0 2-.9 2-2zm-11-4l2.03 
+                    2.71L16 11l4 5H8l3-4zM2 6v14c0 1.1.9 2 2 
+                    2h14v-2H4V6H2z"/>
+                </svg>
+                Gallery
+            </a>
+
+            <a href="https://www.webtoons.com/id/" class="btn btn-link" target="_blank">
+                <svg viewBox="0 0 64 64" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M4 8v40l28 8 28-8V8H4z" fill="#00DC64"/>
+                    <text x="50%" y="55%" text-anchor="middle" font-size="14" font-weight="bold" fill="white" font-family="Arial, sans-serif">
+                        WEBTOON
+                    </text>
+                </svg>
+                Original Webtoon
+            </a>
+
+            <a href="Formulir V2.html" class="btn btn-form">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 
+                    2-.9 2-2V5c0-1.1-.9-2-2-2zm-2 10h-4v4h-2v-4H7v-2h4V7h2v4h4v2z"/>
+                </svg>
+                Form
+            </a>
+
+            <a href="Tentang Kami.html" class="btn btn-about">
+                <svg viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                    <path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 
+                    10-10S17.52 2 12 2zm1 15h-2v-6h2v6zm0-8h-2V7h2v2z"/>
+                </svg>
+                About Us
+            </a>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <p>Selamat datang di Portal Webtoon Indonesia. 
+            Nikmati berbagai komik, galeri, dan informasi terbaru!</p>
+        </div>
+
+        <!-- Footer -->
+        <footer>
+            &copy; CopyRight [Erlangga Sanjaya | 251011701265 | 01SIFP014] 
+            ATP / ATM HARINYA SENIN TERUS! - 2026
+    </div>
+
+    <script>
+        // Dark Mode Functionality
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const html = document.documentElement;
+
+        // Load saved theme
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateIcons(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcons(newTheme);
+            
+            // Add rotation animation
+            themeToggle.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                themeToggle.style.transform = 'rotate(0deg)';
+            }, 300);
+        });
+
+        function updateIcons(theme) {
+            if (theme === 'dark') {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        }
+
+        // Animasi hover untuk logo
+        const logo = document.querySelector('.logo');
+        logo.addEventListener('mouseenter', function() {
+            this.style.transform = 'scale(1.1) rotate(5deg)';
+        });
+        logo.addEventListener('mouseleave', function() {
+            this.style.transform = 'scale(1) rotate(0deg)';
+        });
+
+        // Log ketika tombol diklik
+        document.querySelectorAll('.btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                console.log('Navigating to:', this.getAttribute('href'));
+            });
+        });
+    </script>
+</body>
+</html>

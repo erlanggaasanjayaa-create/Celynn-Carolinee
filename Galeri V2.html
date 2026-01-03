@@ -1,0 +1,644 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Gallery - Portal Webtoon</title>
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg-gradient-1: #f5f7fa;
+            --bg-gradient-2: #c3cfe2;
+            --text-primary: #333;
+            --text-secondary: #666;
+            --accent-color: #00DC64;
+            --accent-hover: #00AB4E;
+            --card-bg: white;
+            --shadow: rgba(0,0,0,0.1);
+            --shadow-hover: rgba(0, 220, 100, 0.2);
+            --clock-bg: white;
+            --clock-text: #00DC64;
+            --nav-bg: #ffffff;
+            --nav-hover-bg: #00DC64;
+            --nav-hover-text: white;
+            --footer-bg: #E5E4E4;
+            --footer-text: #333;
+            --banner-gradient-1: #00DC64;
+            --banner-gradient-2: #00AB4E;
+            --filter-btn-border: #00DC64;
+            --filter-btn-bg: white;
+            --filter-btn-text: #00DC64;
+            --filter-btn-active-bg: #00DC64;
+            --filter-btn-active-text: white;
+            --logo-gradient-1: #FFD700;
+            --logo-gradient-2: #FFA500;
+        }
+
+        [data-theme="dark"] {
+            --bg-gradient-1: #1a1a1a;
+            --bg-gradient-2: #2d2d2d;
+            --text-primary: #e0e0e0;
+            --text-secondary: #b0b0b0;
+            --accent-color: #00DC64;
+            --accent-hover: #00AB4E;
+            --card-bg: #2d2d2d;
+            --shadow: rgba(0,0,0,0.5);
+            --shadow-hover: rgba(0, 220, 100, 0.3);
+            --clock-bg: #2d2d2d;
+            --clock-text: #00DC64;
+            --nav-bg: #2d2d2d;
+            --nav-hover-bg: #00DC64;
+            --nav-hover-text: white;
+            --footer-bg: #1a1a1a;
+            --footer-text: #e0e0e0;
+            --banner-gradient-1: #00AB4E;
+            --banner-gradient-2: #008C3E;
+            --filter-btn-border: #00DC64;
+            --filter-btn-bg: #2d2d2d;
+            --filter-btn-text: #00DC64;
+            --filter-btn-active-bg: #00DC64;
+            --filter-btn-active-text: white;
+            --logo-gradient-1: #4B0082;
+            --logo-gradient-2: #8B00FF;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: linear-gradient(135deg, var(--bg-gradient-1) 0%, var(--bg-gradient-2) 100%);
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+
+        /* Dark Mode Toggle */
+        .theme-toggle {
+            position: fixed;
+            top: 20px;
+            left: 20px;
+            width: 60px;
+            height: 60px;
+            background: var(--accent-color);
+            border-radius: 50%;
+            border: none;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+            z-index: 1000;
+        }
+
+        .theme-toggle:hover {
+            transform: scale(1.1) rotate(20deg);
+        }
+
+        .theme-toggle svg {
+            width: 30px;
+            height: 30px;
+            fill: white;
+        }
+
+        /* Clock Widget */
+        .clock-widget {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--clock-bg);
+            padding: 15px 20px;
+            border-radius: 10px;
+            box-shadow: 0 4px 15px var(--shadow);
+            z-index: 1000;
+            min-width: 180px;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .clock-logo {
+            width: 40px;
+            height: 40px;
+            margin: 0 auto 10px;
+            background: linear-gradient(135deg, var(--logo-gradient-1), var(--logo-gradient-2));
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            transition: all 0.3s ease;
+        }
+
+        .clock-logo::before {
+            content: '';
+            position: absolute;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background: radial-gradient(circle, rgba(255, 215, 0, 0.2) 0%, transparent 70%);
+            opacity: 1;
+            transition: opacity 0.3s ease;
+        }
+
+        [data-theme="dark"] .clock-logo::before {
+            opacity: 0;
+        }
+
+        .clock-logo svg {
+            width: 24px;
+            height: 24px;
+            fill: white;
+        }
+
+        #sunClockIcon {
+            display: block;
+        }
+
+        [data-theme="dark"] #sunClockIcon {
+            display: none;
+        }
+
+        #moonClockIcon {
+            display: none;
+        }
+
+        [data-theme="dark"] #moonClockIcon {
+            display: block;
+        }
+
+        .clock-time {
+            font-size: 1.5em;
+            font-weight: bold;
+            color: var(--clock-text);
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .clock-date {
+            font-size: 0.85em;
+            color: var(--text-secondary);
+            line-height: 1.4;
+            transition: color 0.3s ease;
+        }
+
+        .clock-greeting {
+            font-size: 0.75em;
+            color: var(--text-secondary);
+            margin-top: 5px;
+            font-style: italic;
+            transition: color 0.3s ease;
+        }
+
+        /* Banner */
+        .banner {
+            background: linear-gradient(135deg, var(--banner-gradient-1) 0%, var(--banner-gradient-2) 100%);
+            color: white;
+            text-align: center;
+            padding: 40px 20px;
+            transition: background 0.3s ease;
+        }
+
+        .banner h1 {
+            font-size: 2.5em;
+            margin-bottom: 10px;
+            text-shadow: 2px 2px 4px rgba(0,0,0,0.2);
+        }
+
+        .banner p {
+            font-size: 1.2em;
+            opacity: 0.95;
+        }
+
+        /* Navigation */
+        .navigation {
+            background: var(--nav-bg);
+            padding: 0;
+            box-shadow: 0 2px 10px var(--shadow);
+            transition: all 0.3s ease;
+        }
+
+        .navigation ul {
+            list-style: none;
+            display: flex;
+            justify-content: center;
+            flex-wrap: wrap;
+            margin: 0;
+            padding: 0;
+        }
+
+        .navigation li {
+            margin: 0;
+        }
+
+        .navigation a {
+            display: block;
+            padding: 20px 30px;
+            color: var(--text-primary);
+            text-decoration: none;
+            font-weight: 600;
+            transition: all 0.3s ease;
+            border-bottom: 3px solid transparent;
+        }
+
+        .navigation a:hover, .navigation a.active {
+            background: var(--nav-hover-bg);
+            color: var(--nav-hover-text);
+            border-bottom-color: var(--accent-hover);
+        }
+
+        /* Content */
+        .content {
+            padding: 40px 20px;
+            min-height: 500px;
+        }
+
+        .filter-buttons {
+            display: flex;
+            gap: 10px;
+            flex-wrap: wrap;
+            margin-bottom: 20px;
+            max-width: 1200px;
+            margin-left: auto;
+            margin-right: auto;
+            padding: 0 20px;
+        }
+
+        .filter-btn {
+            padding: 10px 20px;
+            border: 2px solid var(--filter-btn-border);
+            background: var(--filter-btn-bg);
+            color: var(--filter-btn-text);
+            border-radius: 25px;
+            cursor: pointer;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .filter-btn:hover, .filter-btn.active {
+            background: var(--filter-btn-active-bg);
+            color: var(--filter-btn-active-text);
+        }
+
+        .gallery-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .gallery-item {
+            background: var(--card-bg);
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 4px 15px var(--shadow);
+            transition: all 0.3s ease;
+            cursor: pointer;
+        }
+
+        .gallery-item:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 25px var(--shadow-hover);
+        }
+
+        .gallery-image {
+            width: 100%;
+            height: 300px;
+            object-fit: cover;
+            display: block;
+            background: linear-gradient(135deg, #00DC64, #00AB4E);
+        }
+
+        .gallery-info {
+            padding: 15px;
+        }
+
+        .gallery-category {
+            color: var(--accent-color);
+            font-size: 0.85em;
+            font-weight: 600;
+            margin-bottom: 5px;
+            transition: color 0.3s ease;
+        }
+
+        .gallery-title {
+            font-size: 1.1em;
+            font-weight: 600;
+            color: var(--text-primary);
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .gallery-description {
+            color: var(--text-secondary);
+            font-size: 0.9em;
+            line-height: 1.5;
+            display: -webkit-box;
+            -webkit-line-clamp: 3;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
+            transition: color 0.3s ease;
+        }
+
+        /* Footer */
+        .footer {
+            background: var(--footer-bg);
+            color: var(--footer-text);
+            text-align: center;
+            padding: 30px 20px;
+            font-size: 0.95em;
+            transition: all 0.3s ease;
+        }
+
+        @media (max-width: 768px) {
+            .theme-toggle {
+                width: 50px;
+                height: 50px;
+                top: 15px;
+                left: 15px;
+            }
+
+            .theme-toggle svg {
+                width: 25px;
+                height: 25px;
+            }
+
+            .clock-widget {
+                top: 10px;
+                right: 10px;
+                padding: 10px 15px;
+                min-width: 150px;
+            }
+
+            .clock-time {
+                font-size: 1.2em;
+            }
+
+            .clock-date {
+                font-size: 0.75em;
+            }
+
+            .banner h1 {
+                font-size: 1.8em;
+            }
+
+            .navigation a {
+                padding: 15px 20px;
+                font-size: 0.9em;
+            }
+
+            .gallery-grid {
+                grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+                gap: 15px;
+            }
+
+            .gallery-image {
+                height: 200px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Dark Mode Toggle Button -->
+    <button class="theme-toggle" id="themeToggle" aria-label="Toggle dark mode">
+        <svg id="sunIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+            <circle cx="12" cy="12" r="5"/>
+            <line x1="12" y1="1" x2="12" y2="3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="12" y1="21" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="1" y1="12" x2="3" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="21" y1="12" x2="23" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+        </svg>
+        <svg id="moonIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg" style="display: none;">
+            <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+        </svg>
+    </button>
+
+    <!-- Clock Widget -->
+    <div class="clock-widget">
+        <div class="clock-logo">
+            <svg id="sunClockIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <circle cx="12" cy="12" r="5"/>
+                <line x1="12" y1="1" x2="12" y2="3" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="12" y1="21" x2="12" y2="23" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="4.22" y1="4.22" x2="5.64" y2="5.64" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="18.36" y1="18.36" x2="19.78" y2="19.78" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="1" y1="12" x2="3" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="21" y1="12" x2="23" y2="12" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="4.22" y1="19.78" x2="5.64" y2="18.36" stroke="white" stroke-width="2" stroke-linecap="round"/>
+                <line x1="18.36" y1="5.64" x2="19.78" y2="4.22" stroke="white" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <svg id="moonClockIcon" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                <path d="M21 12.79A9 9 0 1111.21 3 7 7 0 0021 12.79z"/>
+            </svg>
+        </div>
+        <div class="clock-time" id="clockTime">00:00:00</div>
+        <div class="clock-date" id="clockDate">Loading...</div>
+        <div class="clock-greeting" id="clockGreeting"></div>
+    </div>
+
+    <table>
+        <!-- Banner -->
+        <tr>
+            <td class="banner">
+                <h1>Galeri Portal Webtoon</h1>
+                <p>Koleksi Komik Digital Terlengkap</p>
+            </td>
+        </tr>
+
+        <!-- Navigation -->
+        <tr>
+            <td class="navigation">
+                <ul>
+                    <li><a href="Home.html">Home</a></li>
+                    <li><a href="Galeri V2.html" class="active">Gallery</a></li>
+                    <li><a href="Formulir V2.html">Form</a></li>
+                    <li><a href="Tentang Kami.html">About Us</a></li>
+                    <li><a href="Bagian Depan.html">Portal Webtoon</a></li>
+                </ul>
+            </td>
+        </tr>
+
+        <!-- Content -->
+        <tr>
+            <td class="content">
+                <div class="filter-buttons">
+                    <button class="filter-btn active" data-filter="all">Semua</button>
+                    <button class="filter-btn" data-filter="romance">Romance</button>
+                    <button class="filter-btn" data-filter="action">Action</button>
+                    <button class="filter-btn" data-filter="commedy">Commedy</button>
+                    <button class="filter-btn" data-filter="drama">Drama</button>
+                    <button class="filter-btn" data-filter="superhero">Superhero</button>
+                    <button class="filter-btn" data-filter="slice of life">Slice of Life</button>
+                    <button class="filter-btn" data-filter="fantasy">Fantasy</button>
+                    <button class="filter-btn" data-filter="superhuman">Superhuman</button>
+                    <button class="filter-btn" data-filter="kingdom">Kingdom</button>
+                </div>
+
+                <div class="gallery-grid" id="galleryGrid"></div>
+            </td>
+        </tr>
+
+        <!-- Footer -->
+        <tr>
+            <td class="footer">
+                &copy; CopyRight [Erlangga Sanjaya | 251011701265 | 01SIFP014] ATP / ATM HARINYA SENIN TERUS! - 2026
+            </td>
+        </tr>
+    </table>
+
+    <script>
+        // Dark Mode
+        const themeToggle = document.getElementById('themeToggle');
+        const sunIcon = document.getElementById('sunIcon');
+        const moonIcon = document.getElementById('moonIcon');
+        const html = document.documentElement;
+
+        const currentTheme = localStorage.getItem('theme') || 'light';
+        html.setAttribute('data-theme', currentTheme);
+        updateIcons(currentTheme);
+
+        themeToggle.addEventListener('click', () => {
+            const currentTheme = html.getAttribute('data-theme');
+            const newTheme = currentTheme === 'light' ? 'dark' : 'light';
+            
+            html.setAttribute('data-theme', newTheme);
+            localStorage.setItem('theme', newTheme);
+            updateIcons(newTheme);
+            
+            themeToggle.style.transform = 'rotate(360deg)';
+            setTimeout(() => {
+                themeToggle.style.transform = 'rotate(0deg)';
+            }, 300);
+        });
+
+        function updateIcons(theme) {
+            if (theme === 'dark') {
+                sunIcon.style.display = 'none';
+                moonIcon.style.display = 'block';
+            } else {
+                sunIcon.style.display = 'block';
+                moonIcon.style.display = 'none';
+            }
+        }
+
+        // Clock
+        function updateClock() {
+            const now = new Date();
+            const days = ['Minggu', 'Senin', 'Selasa', 'Rabu', 'Kamis', 'Jumat', 'Sabtu'];
+            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'Mei', 'Jun', 'Jul', 'Agt', 'Sep', 'Okt', 'Nov', 'Des'];
+            
+            const hours = String(now.getHours()).padStart(2, '0');
+            const minutes = String(now.getMinutes()).padStart(2, '0');
+            const seconds = String(now.getSeconds()).padStart(2, '0');
+            
+            const dayName = days[now.getDay()];
+            const date = now.getDate();
+            const month = months[now.getMonth()];
+            const year = now.getFullYear();
+            
+            let greeting = '';
+            const hour = now.getHours();
+            if (hour < 10) greeting = 'Pagi';
+            else if (hour < 15) greeting = 'Siang';
+            else if (hour < 18) greeting = 'Sore';
+            else greeting = 'Malam';
+            
+            document.getElementById('clockTime').textContent = `${hours}:${minutes}:${seconds}`;
+            document.getElementById('clockDate').innerHTML = `${dayName}, ${date} ${month} ${year}`;
+            document.getElementById('clockGreeting').textContent = `Selamat ${greeting}`;
+        }
+
+        updateClock();
+        setInterval(updateClock, 1000);
+
+        // Gallery data
+        const webtoonData = [
+            { id: 1, title: "Love 4 a Walk", category: "Romance, Commedy, Drama", description: "Hati Pam sudah terlalu sering hancur, dan putus cinta gara-gara anjingnya yang nakal, Bob, adalah puncaknya. Kini bertekad untuk merawat Bob sendiri, berapa lama lagi si romantis yang putus asa ini bisa menahan diri untuk tidak jatuh cinta pada tetangganya yang misterius namun penyayang, Tyler—terutama karena Tyler sangat pandai merawat anjing?", image: "https://m.media-amazon.com/images/M/MV5BYTE3Yzc3NTctMjVmYS00OTkzLTliNGItN2EyYzRjZTc2ZGVjXkEyXkFqcGc@._V1_.jpg" },
+            { id: 2, title: "Lookism", category: "Action, Romance, Commedy, Drama, Slice of Life, Superhero, Superhuman", description: "Park Hyung-Seok adalah seorang penyendiri yang tidak menarik yang terbangun dalam tubuh yang berbeda. Kini tinggi, tampan, dan lebih keren dari sebelumnya dalam wujud barunya, Park Hyung-Seok bertujuan untuk mencapai semua hal yang sebelumnya tidak bisa ia raih. Seberapa jauh ia akan bertindak untuk mempertahankan tubuhnya... dan rahasianya?", image: "https://i.scdn.co/image/ab67616d0000b2737deee6b01d0717aa38e35b4d" },
+            { id: 3, title: "Teenage Mercenary", category: "Action, Commedy, Drama", description: "Pada usia delapan tahun, Ijin Yu kehilangan orang tuanya dalam kecelakaan pesawat dan terdampar di negeri asing, terpaksa menjadi tentara bayaran anak-anak untuk bertahan hidup. Sepuluh tahun kemudian, ia kembali ke rumah dan bertemu kembali dengan keluarganya di Korea, tempat makanan dan tempat tinggal berlimpah dan semuanya tampak damai. Namun, Ijin akan segera menyadari bahwa kehidupan sebagai remaja adalah tantangan bertahan hidup yang sama sekali berbeda.", image: "https://i0.wp.com/anitrendz.net/news/wp-content/uploads/2025/06/TM-Key-Art.png?resize=438%2C630&ssl=1" },
+            { id: 4, title: "CTRL + Alt + Resign", category: "Romance, Commedy, Drama, Slice of Life", description: "Max dan Joy mungkin duduk hanya beberapa inci terpisah di tempat kerja, tetapi mereka sangat berbeda dalam segala hal lainnya. Max lebih suka menjadi pengamat, sementara Joy adalah sosok yang supel di kantor. Jadi, ketika Max secara tidak sengaja melihat sesuatu di laptop kerja Joy yang seharusnya tidak dilihatnya, ia langsung terlempar ke dalam jalinan dinamika tempat kerja yang rumit.", image: "https://pbs.twimg.com/media/GtnP2jybAAEnzDl.jpg" },
+            { id: 5, title: "Our Guild's Idol", category: "Commedy, Drama", description: "Ajin Bae tiba-tiba terjun ke Dear Dane, MMORPG terpopuler di dunia, menggunakan akun kakaknya—yang kebetulan adalah ketua guild nomor satu di game tersebut. Bertugas merahasiakan identitasnya, ia mencoba melindungi warisan kakaknya, tetapi keadaan menjadi kacau ketika ia dikira sebagai orang mesum yang menggoda Bloomie, seorang pemain wanita populer yang sebenarnya adalah idola pria.", image: "https://media.manhwazone.to/i/cover/our-guilds-idol.webp?w=315&h=450" },
+            { id: 6, title: "Blood System", category: "Action, Fantasy, Superhuman, Commedy", description: "Di dunia berbahaya yang dipenuhi monster di setiap sudut, kerajaan-kerajaan menaruh harapan mereka pada Pengguna Sistem, petualang perkasa yang tumbuh lebih kuat lebih cepat daripada siapa pun. Di antara mereka adalah Novis, salah satu yang paling saleh. Tetapi ketika sebuah misi berjalan sangat salah, sistem Novis terinfeksi... dan misi barunya yang pertama adalah haus darah.", image: "https://static.wikia.nocookie.net/justagoblin/images/9/9a/Blood_System_Cover.png/revision/latest?cb=20250609144957" },
+            { id: 7, title: "I'm Not a Soccer Genius!", category: "Commedy, Drama, Action", description: "Dikeluarkan dari akademi elite di Italia, Lee Jian terperangkap dalam bangku cadangan di AC Firenze. Di depan teman masa kecilnya, Kim Jiwoo, ia selalu membual bahwa dirinya adalah seorang genius sepak bola. Kebohongannya terancam ketika Jiwoo mengumumkan rencananya untuk belajar di Italia. Demi menjaga citra 'genius' di mata Jiwoo, Jian berusaha untuk menjadi pemain utama.", image: "https://media.manhwazone.to/i/cover/im-not-a-soccer-genius.webp?w=315&h=450" },
+            { id: 8, title: "My Bias Gets on the Last Train", category: "Drama, Slice of Life, Commedy, Romance", description: "Setiap malam, Yeo-un naik kereta terakhir pulang—rute yang sama, waktu yang sama, rutinitas yang sama. Tapi satu hal terus menarik perhatiannya: seorang gadis dengan gitar dan kehadiran yang terus terngiang di benaknya. Ketika kecintaan yang sama pada band indie Long Afternoon memicu percakapan, pertemuan larut malam mereka mulai berubah menjadi sesuatu yang lebih.", image: "https://i.namu.wiki/i/hSEsQnT2pByg6j6iaqOvWLnu16iUhZNhg6YdQVnFKUQ7EnRscCQFmDMYJGNhp_bd_umhAN6MiqT0fqszFj-EXw.webp" },
+            { id: 9, title: "The Greatest Estate Developer", category: "Action, Superhuman, Superhero, Drama, Commedy, Slice of Life", description: "Ketika mahasiswa teknik sipil Suho Kim tertidur saat membaca novel fantasi, ia terbangun sebagai karakter dalam buku tersebut! Suho kini berada di tubuh Lloyd Frontera, seorang bangsawan malas yang gemar minum, dan keluarganya terlilit hutang yang sangat besar. Dengan menggunakan pengetahuan tekniknya, Suho merancang berbagai penemuan untuk mencegah masa depan mengerikan yang menantinya.", image: "https://i.redd.it/od1krzvnppfb1.jpg" },
+            { id: 10, title: "Baby Tirant", category: "Fantasy, Commedy, Drama, Slice of Life", description: "Gyeoul Yoon bukanlah orang asing bagi tragedi, karena telah kehilangan segalanya—bahkan nyawanya—akibat ayahnya yang tidak berguna. Ketika ia terbangun kembali setelah kematian, Gyeoul mendapati dirinya berada di tubuh bayi yang baru lahir—ia kini adalah Putri Mabel dari Kekaisaran Ermaneau yang perkasa! Dengan keluarga barunya yang penuh kasih sayang dan kekuatan kekaisaran yang berada di bawah kendalinya, Mabel memiliki semua yang pernah diinginkannya.", image: "https://i.namu.wiki/i/lIX_vX56UEL6At3EgcV8K0j_6mkz3wVKeETLvXxzNFkbxWwHOQHqTSCd5HBOb6kc7Pfy88vxYOcVCRvs_lpbSQ.webp" },
+            { id: 11, title: "Trauma Center: Golden Hour", category: "Drama, Slice of Life", description: "Ada pasien yang sekarat padahal mereka masih bisa diobati. Tapi tidak di bawah pengawasannya! Ganghyeok Baek datang ke Rumah Sakit Universitas Hanguk untuk menghentikan itu. Dia memang orang aneh, tapi dia adalah malaikat maut di pusat trauma. Proyeknya untuk menghidupkan kembali pusat trauma baru saja dimulai.", image: "https://awsimages.detik.net.id/community/media/visual/2025/01/21/webtoon-trauma-center.jpeg?w=700&q=90" },
+            { id: 12, title: "This Wasn't in My Adoption Plan!", category: "Drama, Slice of Life, Commedy", description: "Aku menghabiskan satu dekade membersihkan kekacauan yang dibuat Duke Havenik Brauno hanya untuk dibunuh olehnya? Bereinkarnasi sebagai Aerin Brauno, anak haram keluarga Brauno, dia ngeri mengetahui bahwa ayah angkatnya tak lain adalah pria yang membunuhnya. Kali ini, Aerin menolak membiarkan dia mengendalikan nasibnya.", image: "https://pbs.twimg.com/media/GmiK2B5aEAEPgIy.jpg" },
+            { id: 13, title: "FOG LAND", category: "Fantasy", description: "Dante mendaftarkan diri menjadi salah seorang pengajar di FOG LAND, penjara terbesar di bumi yang dijuluki neraka. Namun ternyata narapidana yang ditahan di FOG LAND tidak seperti manusia pada umumnya! Kelas pertama Dante berakhir dengan pembantaian sekelompok penjaga keamanan dan Dante berakhir menjadi salah seorang tahanan di sana. Bisakah Dante mencari jalan untuk keluar dari neraka itu?", image: "https://media.manhwazone.to/i/cover/fog-land.webp?w=315&h=450" },
+            { id: 14, title: "My Numbered Days of Happiness", category: "Kingdom", description: "Aku menghabiskan satu dekade membersihkan kekacauan yang dibuat Duke Havenik Brauno hanya untuk dibunuh olehnya? Bereinkarnasi sebagai Aerin Brauno, anak haram keluarga Brauno, dia ngeri mengetahui bahwa ayah angkatnya tak lain adalah pria yang membunuhnya. Kali ini, Aerin menolak membiarkan dia mengendalikan nasibnya.", image: "https://preview.redd.it/i-was-caught-off-guard-my-numbered-days-of-happiness-v0-pk1t7uvqiage1.jpg?width=400&format=pjpg&auto=webp&s=7eb2e383930052424fb1486056b1586011838beb" },
+            { id: 15, title: "Ticket Hero", category: "Action, Superhero", description: "Siswa yang lemah ini berubah menjadi kuat dengan cara meminjamkan kekuatan dari para arwah orang kuat yang sudah mati!", image: "https://m.media-amazon.com/images/I/71i9hNye6aL._AC_UF1000,1000_QL80_.jpg" },
+            { id: 16, title: "Reincarnation of the Fist King", category: "Fantasy", description: "Dan Woosung, seorang petarung legendaris yang dijuluki Raja Kepalan Tangan, menghabiskan hidupnya menaklukkan murim hanya dengan kekuatan pukulannya. Namun, nasib berbalik ketika dia tewas di tangan Fraksi Iblis. Saat membuka mata, Woosung mendapati dirinya hidup kembali dalam tubuh Lee Jineon, putra agung dari serikat dagang terkaya.", image: "https://static.wikia.nocookie.net/reincarnation-of-the-fist-king/images/d/d6/Webtoon_Cover.jpg/revision/latest/thumbnail/width/360/height/450?cb=20250614182310" },
+            { id: 17, title: "Reborn Rich", category: "Drama", description: "Yoon Hyunwoo telah bekerja untuk Grup Soonyang selama lebih dari 10 tahun. Ia bertugas mengurus segala bisnis kotor sebagai kaki tangan perusahaan, namun pada suatu hari, Hyunwoo malah dijebak dan dibunuh atasannya sendiri. Tak disangka-sangka, saat ia kemudian membuka mata, Hyunwoo menemukan bahwa dirinya telah menjadi Jin Dojoon, cucu bungsu keluarga konglomerat pemilik Grup Soonyang.", image: "https://static.wikia.nocookie.net/koreanwebtoons/images/6/66/Reborn_Rich.jpg/revision/latest?cb=20221209035134" },
+            { id: 18, title: "The Real Lesson", category: "Action", description: "Setelah undang-undang larangan memukul para siswa disahkan, semakin banyak siswa yang seperti preman. Suatu hari, seorang laki-laki yang kuat muncul dan menghajar para preman sekolah tersebut. Sebenarnya siapa laki-laki itu..?!", image: "https://i.pinimg.com/474x/f4/61/ec/f461ec3f9e1a2b66dcef5efc0f98eee9.jpg" },
+            { id: 19, title: "The Status Window to the Soul", category: "Kingdom", description: "Setelah difitnah sebagai penyihir bengis dan berakhir dihukum mati, Chervianne Aerveldote Cherie beregresi ke dirinya di usia 5 tahun! Yang lebih mengagetkan, kini Chervianne memiliki kemampuan untuk melihat jendela status yang menunjukkan isi pikiran orang-orang di sekitarnya. Dari situlah Chervianne mengetahui isi hati ayahnya yang terlihat acuh tak acuh, kakak laki-lakinya yang dingin, serta Carmen, pemimpin menara sihir yang selalu membencinya.", image: "https://swebtoon-phinf.pstatic.net/20250912_293/1757676745771ASggA_JPEG/EpisodeList_Mobile.jpg?type=crop540_540" },
+            { id: 20, title: "Study Group", category: "Action", description: "Yoon Ga Min, siswa di SMK Yusung yang berpenampilan teladan tapi nilai akademiknya jeblok, yang membentuk kelompok belajar untuk bisa kuliah, namun harus menggunakan keahlian bela dirinya untuk melindungi teman-temannya dari perundungan, sambil berusaha meningkatkan nilai di sekolah bermasalah tersebut.", image: "https://assets-a2.kompasiana.com/items/album/2024/10/14/studygroup3-670c83a134777c5a6e417dd2.png?t=o&v=500" },
+            { id: 21, title: "66,666 Years: Advent of the Dark Mage", category: "Fantasy, Superhero", description: "Diablo Volpir, seorang penyihir yang menggunakan sihir hitam disegel oleh 12 dewa! 66.666 tahun berlalu, dia terlahir kembali menjadi Jamie Welton! Putra tertua dari keluarga Welton yang penuh kasih sayang. Akankah Jamie dapat menggunakan sihirnya kembali dan membalas 12 dewa yang menyegelnya?!", image: "https://static.wikia.nocookie.net/koreanwebtoons/images/a/a3/66%2C666_Years_Advent_of_the_Dark_Mage.jpg/revision/latest?cb=20211010064101" },
+            { id: 22, title: "Surviving as the Improvised Aristocrat", category: "Kingdom", description: "Di kehidupan sebelumnya aku yang mahasiswa pascasarjana jadi anjing pesuruh dosenku, di kehidupan sekarang aku jadi anjing pesuruh anak yang lebih muda dariku?! Reina mau tak mau harus selalu terlihat baik di mata Kirian untuk bisa bertahan di keluarga Duke yang membawanya untuk tinggal di sana.", image: "https://i.pinimg.com/736x/f6/31/a8/f631a81fba1507a4d520f3cefba3e40f.jpg" },
+            { id: 23, title: "I'm Not That Kind of Talent", category: "Fantasy", description: "Tak ada makhluk di dunia iblis maupun manusia yang tidak takut dan takjub kepada Demon Arut, Komandan Pasukan 0 yang kekuatannya tak terkalahkan. Kenyataannya, semuanya hanya kesalahpahaman belaka, dan Demon Arut sebenarnya adalah Deon Hardt yang lemah dan penyakitan.", image: "https://image-repository-cdn.tappytoon.com/series/94/02cdde67-1807-4787-91a1-e149b0d52e90.jpg?size=large" },
+            { id: 24, title: "Debut or Die", category: "Drama", description: "Setelah minum-minum semalaman, Ryu Geonwoo tiba-tiba terbangun di tubuh Park Moondae. Dari pengangguran usia akhir 20-an yang sedang sibuk menyiapkan diri untuk ujian PNS, kini dia dihadapkan misi dengan ancaman menyeramkan: Debut atau mati! Moondae hanya memiliki waktu satu tahun untuk debut sebagai idol.", image: "https://static.wikia.nocookie.net/debutordie/images/1/18/KR_Webtoon_Cover_3.jpeg/revision/latest?cb=20250211113627" },
+            { id: 25, title: "Top Corner", category: "Action", description: "Anak yang jenius di pelajaran matematika, mencoba untuk bermain sepak bola?! Apakah semua kalkulasinya akan mencetakkan gol untuk timnya?!", image: "https://blogger.googleusercontent.com/img/b/R29vZ2xl/AVvXsEipNh8ssdDsWSKko4KjvrAVn4yohSxX2eq2s9HHUL4FqQiJwDdLDXe2udfG65VMhnHD-Yl9R7G9VPzxQyZVyv4yvjKq03Pyink522kPH9rVyXcH1t9ax1h-UnMUkZBWR6Fd7kDC1J_PNSmEtofG0nLajXn5MyFEQ5sV-kyH8y2OViZKmQbu3fQQolBQ/s623/Top%20Corner.webp" },
+            { id: 26, title: "How to Fight", category: "Action", description: "Hobin, pecundang di sekolah, tidak sengaja menemukan suatu channel lama di Newtube dan sejak hari itu hidupnya berubah. Apakah Hobin bisa belajar cara berkelahi dan membuat konten yang bagus?", image: "https://static.wikia.nocookie.net/koreanwebtoons/images/5/55/Viral_Hit.jpg/revision/latest?cb=20201013045321" },
+            { id: 27, title: "Nostalgia Ramadhan Si Juki Kecil", category: "Commedy", description: "Cerita konyol Ramadhan pertama Si Juki saat ia masih bocah cilik yang lugu. Siap-siap tertawa sambil menunggu saat berbuka puasa!", image: "https://swebtoon-phinf.pstatic.net/20160603_123/1464931778674n8PD6_JPEG/EC9E91ED9288EC8381EC84B8_mobile.jpg?type=crop540_540" },
+            { id: 28, title: "Eleceed", category: "Commedy, Action, Drama", description: "Seo Jiwoo, seorang siswa SMA yang tidak menyadari adanya dunia tersembunyi di sekelilingnya. Ia sebenarnya memiliki sebuah kekuatan misterius, sehingga Jiwoo berusaha menyembunyikannya. Sayangnya, rahasia Jiwoo akhirnya terkuak saat ia menyelamatkan seekor kucing liar yang babak belur.", image: "https://i.pinimg.com/474x/7a/58/b3/7a58b376ca7ef0cb909a1677e16a9fb8.jpg" },
+            { id: 29, title: "The Academy's Genius Swordsman", category: "Action", description: "Setelah berhasil mengalahkan raksasa Ahayute, Ronan bersiap menyambut kematian dengan tubuhnya yang melemah. Namun di saat-saat terakhirnya, muncul 'delapan sayap' yang menginvasi bumi. Sebelum Ronan sempat bertarung melawan makhluk tersebut, suatu hal terjadi yang membuat ia kembali ke masa remajanya–sekitar 10 tahun sebelum monster dan raksasa mendatangi bumi.", image: "https://pbs.twimg.com/media/F8l0UCjXMAAEcIg.jpg" },
+            { id: 30, title: "What a Bountiful Harvest, Demon Lord!", category: "Fantasy", description: "Ketika Kim Jangcheol, mahasiswa jurusan pertanian yang malang, mulai memainkan MMORPG fantasi Paladins of Blood untuk melepas penat, ia tak pernah membayangkan akan berakhir di dalam game tersebut, apalagi menjadi bos terakhirnya, Raja Iblis Credos! Kalau ia menginvasi dunia manusia, ia akan mati di tangan sang karakter utama.", image: "https://static.wikia.nocookie.net/the-greatest-estate-developer/images/f/f1/What_a_Bountiful_Harvest_Demon_Lord_webtoon_2.jpg/revision/latest?cb=20250901051148" },
+            { id: 31, title: "Kontrakan Pak Hadi", category: "Slice of Life", description: "Bagi Pak Hadi, membangun rumah kontrakan adalah tiket menuju masa pensiun yang tenang. Di dampingi Bu Hani, istrinya yang suportif dan baik hati, mimpi itu akhirnya terwujud. Namun, pendapatan pasif ternyata tidak pernah benar-benar pasif?!", image: "https://swebtoon-phinf.pstatic.net/20251216_233/1765874905807HPsQs_JPEG/Kontrakan%20Pak%20Hadi_EpisodeList_Mobile.jpg?type=crop540_540" },
+            { id: 32, title: "Operation: True Love", category: "Romance", description: "Soo-Ae patah hati setelah memergoki pacarnya mencium Ra-Im, gadis yang sudah seperti saudari baginya. Dia lalu membuat rencana selingkuh dengan Eun-Hyuk untuk merebut kembali perhatian pacarnya, sekaligus untuk menaikkan angka cinta di hape misterius yang tiba-tiba muncul!", image: "https://static.wikia.nocookie.net/koreanwebtoons/images/2/22/Operation_True_Love.jpg/revision/latest?cb=20230909102908" }
+        ];
+
+        function renderGallery(filter = 'all') {
+            const galleryGrid = document.getElementById('galleryGrid');
+            galleryGrid.innerHTML = '';
+
+            const filteredData = filter === 'all' 
+                ? webtoonData 
+                : webtoonData.filter(item => {
+                    const categories = item.category.toLowerCase().split(',').map(cat => cat.trim());
+                    return categories.some(cat => cat.includes(filter.toLowerCase().replace('-', ' ')));
+                });
+
+            filteredData.forEach(item => {
+                const galleryItem = document.createElement('div');
+                galleryItem.className = 'gallery-item';
+                galleryItem.innerHTML = `
+                    <img src="${item.image}" alt="${item.title}" class="gallery-image" onerror="this.src='https://via.placeholder.com/400x500/00DC64/FFFFFF?text=${encodeURIComponent(item.title)}'">
+                    <div class="gallery-info">
+                        <div class="gallery-category">${item.category}</div>
+                        <div class="gallery-title">${item.title}</div>
+                        <div class="gallery-description">${item.description}</div>
+                    </div>
+                `;
+                galleryItem.addEventListener('click', () => {
+                    alert(`Judul: ${item.title}\n\nKategori: ${item.category}\n\nDeskripsi:\n${item.description}`);
+                });
+                galleryGrid.appendChild(galleryItem);
+            });
+        }
+
+        // Filter buttons
+        document.querySelectorAll('.filter-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+                this.classList.add('active');
+                const filter = this.getAttribute('data-filter');
+                renderGallery(filter);
+            });
+        });
+
+        renderGallery();
+    </script>
+</body>
+</html>
